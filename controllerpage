@@ -1,0 +1,188 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace sample_mvc7.Controllers
+{
+    public class HomeController : Controller
+    {
+        public string GetResult(string str)
+        {
+            if (str[0] == '+' || str[0] == '-' ||str[0]=='*'||str[0]=='/')
+            {
+                List<char> symboll = new List<char>();
+                char[] charsym = { '+', '-', '*', '/' };
+                string[] numm = str.Split(charsym);
+                for (int k = 0; k < str.Length; k++)
+                {
+                    if (str[k] == '+' || str[k] == '-' || str[k] == '*' || str[k] == '/')
+                    {
+                        symboll.Add(str[k]);
+                    }
+                }
+                if (str[0] == '+' || str[0] == '-')
+                {
+                    if (str[0] == '+')
+                    {
+                        double result = Convert.ToDouble(numm[1]);
+
+                        for (int i = 2; i < numm.Length; i++)
+                        {
+                            double num = Convert.ToDouble(numm[i]);
+                            int j = i - 1;
+                            switch (symboll[j])
+                            {
+                                case '+':
+                                    result = result + num;
+                                    break;
+                                case '-':
+                                    result = result - num;
+                                    break;
+                                case '*':
+                                    result = result * num;
+                                    break;
+                                case '/':
+                                    result = result / num;
+                                    break;
+                                default:
+                                    result = 0.0;
+                                    break;
+                            }
+                        }
+                        return result.ToString();
+                    }
+
+                    else 
+                    {
+
+                            double resulte = Convert.ToInt32(numm[1]);
+                          //as First symbol is minus first time only we do correction
+                            for (int a = 2; a < 3; a++)
+                            {
+                            resulte = Convert.ToInt32(numm[a-1]);
+                            double nume = Convert.ToInt32(numm[a]);
+
+                                int v = a - 1;
+                                switch (symboll[v])
+                                {
+                                case '+':
+                                    if (nume > resulte)
+                                    { resulte = nume - resulte; }
+                                    else { resulte = -( resulte - nume); }
+                                    break;
+                                case '-': 
+                                    resulte = -(resulte + nume);
+                                    break;
+                                case '*':
+                                    resulte = -(resulte * nume);
+                                    break;
+                                case '/':
+                                    resulte = -(resulte / nume);
+                                    break;
+                                default:
+                                    resulte = 0.0;
+                                    break;
+
+                                }
+                            }
+                            //for the further numbers and symbols we do normal opertion
+                        for (int a = 3; a < numm.Length; a++)
+                        {
+                            
+                            double nume = Convert.ToInt32(numm[a]);
+
+                            int v = a - 1;
+                            switch (symboll[v])
+                            {
+                                case '+':
+                                    resulte = resulte + nume;
+                                    break;
+                                case '-':
+                                    resulte = resulte - nume;
+                                    break;
+                                case '*':
+                                    resulte = resulte * nume;
+                                    break;
+                                case '/':
+                                    resulte = resulte / nume;
+                                    break;
+                                default:
+                                    resulte = 0.0;
+                                    break;
+
+                            }
+                        }
+
+                        return resulte.ToString();
+                    }
+                    
+                }
+                else { ViewBag.fla = 2;
+                    return Request["txt"]; }
+                
+            }
+            else
+            {
+                List<char> symbleList = new List<char>();
+                char[] charSymble = { '+', '-', '*', '/' };
+                string[] st = str.Split(charSymble);
+                for (int i = 0; i < str.Length; i++)
+                {
+                    if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
+                    {
+                        symbleList.Add(str[i]);
+                    }
+                }
+                double result = Convert.ToDouble(st[0]);
+
+
+                for (int i = 1; i < st.Length; i++)
+                {
+                    double num = Convert.ToDouble(st[i]);
+                    int j = i - 1;
+                    switch (symbleList[j])
+                    {
+                        case '+':
+                            result = result + num; 
+                            break;
+                        case '-':
+                            result = result - num;
+                            break;
+                        case '*':
+                            result = result * num;
+                            break;
+                        case '/':
+                            result = result / num;
+                            break;
+                            
+                        default:
+                            result = 0.0;
+                            break;
+                    }
+                }
+                return result.ToString();
+            }
+        }
+        public ActionResult Index()
+        {
+            if (Request["txt"] != null)
+            {
+                if (Request["txt"][Request["txt"].Length - 1] == '+' || Request["txt"][Request["txt"].Length - 1] == '-' || Request["txt"][Request["txt"].Length - 1] == '*' || Request["txt"][Request["txt"].Length - 1] == '/')
+                {
+                    ViewBag.flag = 0;
+                    ViewBag.result = Request["txt"];
+                }
+                else
+                {
+                    ViewBag.result = GetResult(Request["txt"]);
+                    ViewBag.flag = 1;
+                }
+            }
+            return View();
+        }
+
+    }
+
+}
